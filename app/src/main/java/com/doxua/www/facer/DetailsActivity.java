@@ -17,6 +17,6 @@ public class DetailsActivity extends AppCompatActivity {
         Log.d("PLAYGROUND", "Details ID: " + getIntent().getIntExtra("EXTRA_DETAILS_ID", -1));
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(RegFaces.NOTIFICATION_ID);
+        notificationManager.cancel(MainActivity.NOTIFICATION_ID);
     }
 }
