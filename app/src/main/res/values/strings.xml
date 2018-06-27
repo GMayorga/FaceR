@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FaceR</string>
+    <string name="recognize">Recognize</string>
+    <string name="train_faces">Train Faces</string>
 </resources>

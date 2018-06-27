@@ -57,11 +57,11 @@ public class RegFaces extends AppCompatActivity {
 
     //For Photos
     public static int NOTIFICATION_ID = 1;
-    Bitmap bitmapSelectGallery;
+    Bitmap bitmapSelectGallery =null;
     Bitmap bitmapAutoGallery;
 //    Bitmap finalBitmapPic;
 
-    GalleryObserver directoryFileObserver;
+//    GalleryObserver directoryFileObserver;
     private static RegFaces instance;
 
     //For Photos ^
@@ -100,21 +100,14 @@ public class RegFaces extends AppCompatActivity {
         });
 
 
-        instance = this;
+//        instance = this;
+//
+//        directoryFileObserver = new GalleryObserver("/storage/emulated/0/MyGlass/");
+//        directoryFileObserver.startWatching();
 
-        directoryFileObserver = new GalleryObserver("/storage/emulated/0/MyGlass/");
-        directoryFileObserver.startWatching();
-
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //This is required to have the most recent photo appear on the app:
         lastPhotoInGallery();
+
+
     }
 
     private void openGallery() {
@@ -126,24 +119,31 @@ public class RegFaces extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //This code is to display the selected image from Gallery and convert to Bitmap
         super.onActivityResult(requestCode, resultCode, data);
-
-
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             Uri imageUri = data.getData();
 
+            //This is required to make a bitmap out of URI. Notifications can only display bitmap
             try {
-                bitmapSelectGallery = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
+                bitmapSelectGallery = MediaStore.Images.Media.getBitmap(
+                        this.getContentResolver(), imageUri);
+
+            } catch (Exception e) {
+
             }
+            imageView.setImageBitmap(bitmapSelectGallery);
 
-
-            detectDisplayAndRecognize(bitmapSelectGallery);
             //This is required in order to make notification appear automatically:
 //            notifications();
+
+            if (bitmapSelectGallery !=null) {
+            detectDisplayAndRecognize(bitmapSelectGallery);
+            }
         }
     }
+
+
     public static RegFaces getInstance() {
         return instance;
     }
@@ -174,16 +174,18 @@ public class RegFaces extends AppCompatActivity {
 
                 if (bitmapAutoGallery != null) {
                     imageView.setImageBitmap(bitmapAutoGallery);
-//                    detectDisplayAndRecognize(bitmapAutoGallery);
+//
+//                    //This is required in order to make notification appear automatically
+//                    //However, a delay is required because if it appears to soon on phone, it will not appear on Glass
+////                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+////                        @Override
+////                        public void run() {
+////                            notifications();
+////                        }
+////                    }, 2000);
 
-                    //This is required in order to make notification appear automatically
-                    //However, a delay is required because if it appears to soon on phone, it will not appear on Glass
-//                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            notifications();
-//                        }
-//                    }, 2000);
+                    detectDisplayAndRecognize(bitmapAutoGallery);
+
                 }
             }
         }
@@ -283,7 +285,8 @@ public class RegFaces extends AppCompatActivity {
         // -----------------------------------------------------------------------------------------
         //                                      DISPLAY
         // -----------------------------------------------------------------------------------------
-        if ( numFaces > 0 ) {
+
+        if (numFaces > 0) {
             // Multiple face detection.
             for (int i = 0; i < numFaces; i++) {
 
@@ -312,10 +315,13 @@ public class RegFaces extends AppCompatActivity {
         //                                  FACE RECOGNITION
         // -----------------------------------------------------------------------------------------
 
-        if(numFaces >0) {
+        if (numFaces > 0) {
+
             recognize(faces.get(0), greyMat, tv);
+
         }
     }
+
 
     /**
      * Predict whether the choosing image is matching or not.
@@ -330,7 +336,7 @@ public class RegFaces extends AppCompatActivity {
 
         // Find the correct root path where our trained face model is stored.
         String personName = "Tom Cruise";
-        String photosFolderPath = root + "/myTrainDir/tom_cruise";
+        String photosFolderPath = root + "/saved_images/tom_cruise";
         File photosFolder = new File(photosFolderPath);
         File f = new File(photosFolder, TrainFaces.EIGEN_FACES_CLASSIFIER);
 
@@ -354,7 +360,7 @@ public class RegFaces extends AppCompatActivity {
 
             // Find the correct root path where our trained face model is stored.
             personName = "Katie Holmes";
-            photosFolderPath = root + "/myTrainDir/katie_holmes";
+            photosFolderPath = root + "/saved_images/katie_holmes";
             photosFolder = new File(photosFolderPath);
             f = new File(photosFolder, TrainFaces.EIGEN_FACES_CLASSIFIER);
 
