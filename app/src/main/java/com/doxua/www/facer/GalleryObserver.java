@@ -24,12 +24,12 @@ public class GalleryObserver extends FileObserver {
             @Override
             public void run() {
 
-
-                MainActivity.getInstance().lastPhotoInGallery();
+              MainActivity.getInstance().lastPhotoInGallery();
             }
-        },2000);
+        },1000);
 
         }
     }
+
 
 }

@@ -3,6 +3,7 @@ package com.doxua.www.facer;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 
@@ -323,6 +324,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 imageView.setImageBitmap(bitmap);
+                tv.setText("No Face Detected.");
+
             }
             // -----------------------------------------------------------------------------------------
             //                                  FACE RECOGNITION
@@ -391,16 +394,17 @@ public class MainActivity extends AppCompatActivity {
                 prediction = label.get(0);
                 acceptanceLevel = (int) reliability.get(0);
 
-
             }
+
 
             // Display the prediction.
             if (prediction <= -1 || acceptanceLevel >= ACCEPT_LEVEL) {
                 // Display on text view, not matching or unknown person.
-                tv.setText("Unknown. " + "Acceptance Level Too High: " +acceptanceLevel);
+                tv.setText("\tUnknown." + "\nAcceptance Level Too High: " +acceptanceLevel);
+
             } else {
                 // Display the information for the matching image.
-                tv.setText("A match is found: " + personName +  " " + "Acceptance Level: " + acceptanceLevel);        }
+                tv.setText("A match is found: " + personName + "\nAcceptance Level: " + acceptanceLevel);        }
 
         }
 
